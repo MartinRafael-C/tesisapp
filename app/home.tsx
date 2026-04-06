@@ -1,163 +1,232 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Colors } from '../constants/Colors';
-import { Ionicons } from '@expo/vector-icons'; // Iconos integrados en Expo
+import { supabase } from '../services/supabaseConfig';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const FRASES_BOSCO = [
+  "«Hijo mío, estate siempre alegre. Nuestra santidad consiste en estar muy alegres».",
+  "«La educación es cosa del corazón. Solo Dios tiene las llaves».",
+  "«Caminen con los pies en la tierra, pero vivan con el corazón en el cielo».",
+  "«Me basta que sean jóvenes para que los ame con todo mi corazón».",
+  "«No dejes para mañana el bien que puedas hacer hoy»."
+];
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [saludo, setSaludo] = useState('');
+  const [frase, setFrase] = useState('');
+
+  useEffect(() => {
+    // Lógica de saludo según la hora
+    const hora = new Date().getHours();
+    if (hora >= 6 && hora < 12) setSaludo('Buenos Días');
+    else if (hora >= 12 && hora < 19) setSaludo('Buenas Tardes');
+    else setSaludo('Buenas Noches');
+
+    // Selección de frase aleatoria
+    const indiceAleatorio = Math.floor(Math.random() * FRASES_BOSCO.length);
+    setFrase(FRASES_BOSCO[indiceAleatorio]);
+  }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      // Regresa a la pantalla de "Bienvenido" (index.tsx)
+      router.replace('/');
+    }
+  };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Header con saludo personalizado */}
-      <View style={styles.header}>
-        <Text style={styles.greetingText}>Bienvenido, Joven</Text>
-        <View style={styles.divider} />
-      </View>
-
-      {/* Tarjeta de la Frase de Don Bosco (Efecto Pergamino) */}
-      <View style={styles.quoteCard}>
-      <Ionicons name="chatbox-ellipses-outline" size={24} color={Colors.primary} style={styles.quoteIcon} />
-        <Text style={styles.quoteText}>
-          "Tratad de haceros amar más que haceros temer. La economía del castigo es la última ratio."
-        </Text>
-        <Text style={styles.author}>— San Juan Bosco</Text>
-      </View>
-
-      {/* Sección de Acciones Principales */}
-      <View style={styles.menuGrid}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         
-        {/* Botón: Tutorial del Holograma */}
-        <TouchableOpacity 
-          style={styles.menuItem} 
-          onPress={() => router.push('/tutorial')}
-        >
-          <View style={[styles.iconContainer, { backgroundColor: '#E0C9A6' }]}>
-            <Ionicons name="prism-outline" size={32} color={Colors.text} />
+        {/* Header Centralizado y con margen superior */}
+        <View style={styles.header}>
+          <Text style={styles.brandTitle}>ORATORIO DIGITAL</Text>
+          <View style={styles.timeBadge}>
+            <Text style={styles.timeText}>{saludo}</Text>
           </View>
-          <Text style={styles.menuTitle}>Construcción</Text>
-          <Text style={styles.menuSubtitle}>Crea tu pirámide de holograma</Text>
-        </TouchableOpacity>
+        </View>
 
-        {/* Botón: Chatbot IA Don Bosco */}
-        <TouchableOpacity 
-          style={[styles.menuItem, styles.highlightItem]} 
-          onPress={() => router.push('/chat')}
-        >
-          <View style={[styles.iconContainer, { backgroundColor: Colors.primary }]}>
-            <Ionicons name="chatbubbles-outline" size={32} color={Colors.surface} />
-          </View>
-          <Text style={styles.menuTitle}>Hablar con Don Bosco</Text>
-          <Text style={styles.menuSubtitle}>Sabiduría e Inteligencia Artificial</Text>
-        </TouchableOpacity>
+        {/* Burbuja de Frases de Don Bosco (Icono corregido) */}
+        <View style={styles.quoteBubble}>
+          <Ionicons name="chatbubble-ellipses-sharp" size={28} color="#B8860B" style={styles.quoteIcon} />
+          <Text style={styles.quoteText}>{frase}</Text>
+          <Text style={styles.quoteAuthor}>— San Juan Bosco</Text>
+        </View>
 
-      </View>
+        {/* Contenedor de Botones Principales */}
+        <View style={styles.buttonContainer}>
+          
+          {/* Botón Holograma */}
+          <TouchableOpacity 
+            style={styles.mainButton} 
+            onPress={() => router.push('/holograma')}
+          >
+            <View style={styles.iconCircle}>
+              <Ionicons name="cube" size={26} color="#FFF" />
+            </View>
+            <View style={styles.btnTextBox}>
+              <Text style={styles.btnTitle}>PROCESO HOLOGRAMA</Text>
+              <Text style={styles.btnDesc}>Guía técnica y visualización 3D</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#DDD" />
+          </TouchableOpacity>
 
-      {/* Footer Decorativo */}
-      <Text style={styles.footerText}>DA MIHI ANIMAS, CAETERA TOLLE</Text>
-    </ScrollView>
+          {/* Botón Chatbot */}
+          <TouchableOpacity 
+            style={[styles.mainButton, { borderLeftColor: '#2E7D32' }]} 
+            onPress={() => router.push('/chat')}
+          >
+            <View style={[styles.iconCircle, { backgroundColor: '#2E7D32' }]}>
+              <Ionicons name="chatbox-ellipses" size={26} color="#FFF" />
+            </View>
+            <View style={styles.btnTextBox}>
+              <Text style={styles.btnTitle}>CHATBOT DON BOSCO</Text>
+              <Text style={styles.btnDesc}>Conversa con nuestra Inteligencia Artificial</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#DDD" />
+          </TouchableOpacity>
+
+        </View>
+
+        {/* Bloque de Cierre de Sesión inferior */}
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={20} color="#C62828" />
+            <Text style={styles.logoutText}>CERRAR SESIÓN</Text>
+          </TouchableOpacity>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: '#FDFBF0', // Fondo crema suave
   },
-  content: {
-    padding: 25,
-    paddingTop: 60,
+  scrollContent: {
+    paddingHorizontal: 25,
+    paddingBottom: 40,
   },
   header: {
+    marginTop: 40, // Espacio para que no pegue arriba
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 35,
   },
-  greetingText: {
-    fontFamily: 'Cinzel-Bold',
-    fontSize: 22,
-    color: Colors.text,
-    letterSpacing: 1,
+  brandTitle: {
+    fontFamily: 'Cinzel-Bold', // Asegúrate de tener cargada esta fuente
+    fontSize: 28,
+    color: '#333',
+    letterSpacing: 2,
+    textAlign: 'center',
   },
-  divider: {
-    width: 50,
-    height: 2,
-    backgroundColor: Colors.primary,
-    marginTop: 10,
-  },
-  quoteCard: {
-    backgroundColor: Colors.surface,
-    padding: 30,
-    borderRadius: 20,
+  timeBadge: {
+    backgroundColor: '#F3EFE0',
+    paddingHorizontal: 25,
+    paddingVertical: 8,
+    borderRadius: 25,
+    marginTop: 12,
     borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: Colors.text,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
+    borderColor: 'rgba(184, 134, 11, 0.2)',
+  },
+  timeText: {
+    fontFamily: 'Cinzel-Bold',
+    fontSize: 16,
+    color: '#B8860B',
+  },
+  quoteBubble: {
+    backgroundColor: '#FFF',
+    padding: 25,
+    borderRadius: 30,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 15,
     marginBottom: 40,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
   },
   quoteIcon: {
-    marginBottom: 10,
     alignSelf: 'center',
+    marginBottom: 10,
   },
   quoteText: {
-    fontFamily: 'Lato-Regular',
-    fontSize: 18,
-    color: Colors.text,
-    textAlign: 'center',
+    fontSize: 16,
+    color: '#444',
     fontStyle: 'italic',
-    lineHeight: 28,
+    lineHeight: 24,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
-  author: {
-    fontFamily: 'Cinzel-Bold',
-    fontSize: 14,
-    color: Colors.primary,
+  quoteAuthor: {
     textAlign: 'right',
-    marginTop: 20,
+    marginTop: 15,
+    fontFamily: 'Cinzel-Bold',
+    fontSize: 11,
+    color: '#B8860B',
+    letterSpacing: 1,
   },
-  menuGrid: {
-    gap: 20,
+  buttonContainer: {
+    gap: 18,
   },
-  menuItem: {
-    backgroundColor: Colors.surface,
-    padding: 20,
-    borderRadius: 15,
-    flexDirection: 'column',
+  mainButton: {
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.border,
+    padding: 18,
+    borderRadius: 22,
+    borderLeftWidth: 6,
+    borderLeftColor: '#B8860B',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
   },
-  highlightItem: {
-    borderColor: Colors.primary,
-    borderWidth: 2,
-  },
-  iconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  iconCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: 18,
+    backgroundColor: '#B8860B',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
   },
-  menuTitle: {
+  btnTextBox: {
+    marginLeft: 15,
+    flex: 1,
+  },
+  btnTitle: {
     fontFamily: 'Cinzel-Bold',
-    fontSize: 18,
-    color: Colors.text,
+    fontSize: 14,
+    color: '#333',
+    letterSpacing: 0.5,
   },
-  menuSubtitle: {
-    fontFamily: 'Lato-Light',
+  btnDesc: {
+    fontSize: 11,
+    color: '#888',
+    marginTop: 3,
+  },
+  footer: {
+    marginTop: 60,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+  },
+  logoutBtn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+  logoutText: {
+    fontFamily: 'Cinzel-Bold',
     fontSize: 13,
-    color: Colors.textSecondary,
-    marginTop: 5,
-    textAlign: 'center',
+    color: '#C62828',
+    letterSpacing: 1,
   },
-  footerText: {
-    fontFamily: 'Cinzel-Regular',
-    fontSize: 12,
-    color: Colors.primary,
-    textAlign: 'center',
-    marginTop: 40,
-    opacity: 0.6,
-  }
 });

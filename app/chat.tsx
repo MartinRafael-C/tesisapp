@@ -1,186 +1,123 @@
 import React, { useState, useRef } from 'react';
-import { 
-  View, Text, StyleSheet, TextInput, FlatList, 
-  TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator,
-  SafeAreaView 
-} from 'react-native';
-import { Colors } from '../constants/Colors';
+import { View, Text, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context'; // Arregla el WARN de SafeAreaView
+import ChatInput from '../components/ChatInput';
+
+// Importación condicional o protegida para evitar el crash en Expo Go SDK 53+
+let Notifications: any;
+try {
+  Notifications = require('expo-notifications');
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+} catch (e) {
+  console.log("Notificaciones no soportadas en este entorno");
+}
 
 export default function ChatScreen() {
-  const [messages, setMessages] = useState([
-    { id: '1', text: "¡Hola, mi querido joven! ¿En qué puedo ayudarte hoy en tu camino?", sender: 'bosco' }
-  ]);
-  const [inputText, setInputText] = useState('');
+  const router = useRouter();
+  const [messages, setMessages] = useState([{ id: '1', text: "¡Buenos días, mi querido joven! ¿En qué puedo guiarte hoy?", sender: 'bosco' }]);
   const [isTyping, setIsTyping] = useState(false);
+  const [inputText, setInputText] = useState('');
   const flatListRef = useRef<FlatList>(null);
 
   const sendMessage = async () => {
-    if (inputText.trim() === '' || isTyping) return;
-
-    const userMsg = { id: Date.now().toString(), text: inputText, sender: 'user' };
-    setMessages(prev => [...prev, userMsg]);
-    const currentInput = inputText;
+    if (!inputText.trim() || isTyping) return;
+    const userText = inputText;
+    setMessages(p => [...p, { id: Date.now().toString(), text: userText, sender: 'user' }]);
     setInputText('');
     setIsTyping(true);
 
     try {
-      // Configuración para OpenRouter y Qwen 3.6 Plus
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.EXPO_PUBLIC_OPENROUTER_API_KEY}`,
-          'HTTP-Referer': 'https://localhost:8081', // Opcional para OpenRouter
-          'X-Title': 'Tesis Don Bosco App',        // Opcional para OpenRouter
+          "Authorization": `Bearer ${process.env.EXPO_PUBLIC_OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "qwen/qwen3.6-plus:free", 
+          model: "qwen/qwen-turbo",
           messages: [
-            { 
-              role: "system", 
-              content: "Eres San Juan Bosco (Don Bosco). Tu tono es paternal, amable y siempre animas a los jóvenes. Respondes de forma breve y espiritual. Usa frases como 'Mi querido hijo' o '¡Alegría!'. Tu objetivo es guiar con el Sistema Preventivo (Razón, Religión y Amor). Mantén las respuestas cortas para visualización móvil." 
-            },
-            ...messages.map(m => ({
-                role: m.sender === 'user' ? 'user' : 'assistant',
-                content: m.text
-            })),
-            { role: "user", content: currentInput }
+            { role: "system", content: "Eres San Juan Bosco. Responde paternalmente, alegre y breve. Saluda siempre con afecto." },
+            { role: "user", content: userText }
           ],
         }),
       });
 
       const data = await response.json();
-      
-      if (data.choices && data.choices.length > 0) {
-        const reply = data.choices[0].message.content;
-        setMessages((prev) => [...prev, { 
-          id: (Date.now() + 1).toString(), 
-          text: reply, 
-          sender: 'bosco' 
-        }]);
-      } else {
-        throw new Error("Respuesta no válida de la API");
-      }
+      const reply = data.choices[0].message.content;
 
-    } catch (error) {
-      console.error("Error en Chat:", error);
-      setMessages((prev) => [...prev, { 
-        id: 'error', 
-        text: "Hijo mío, en este momento no puedo escucharte bien. Inténtalo de nuevo pronto.", 
-        sender: 'bosco' 
-      }]);
-    } finally {
-      setIsTyping(false);
+      setMessages(p => [...p, { id: Date.now().toString(), text: reply, sender: 'bosco' }]);
+      
+      // Solo dispara la notificación si la librería cargó bien
+      if (Notifications?.scheduleNotificationAsync) {
+        await Notifications.scheduleNotificationAsync({
+          content: { title: "Don Bosco te respondió 🕊️", body: reply.substring(0, 50) + "...", sound: true },
+          trigger: null,
+        });
+      }
+    } catch (e) { 
+      console.error(e); 
+    } finally { 
+      setIsTyping(false); 
+      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
-        style={styles.container}
-        // Ajustamos el offset para que el input suba correctamente con el teclado
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 20}
-      >
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#B8860B" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>DON BOSCO IA</Text>
+          <View style={{ width: 24 }} />
+        </View>
+
         <FlatList
           ref={flatListRef}
           data={messages}
-          keyExtractor={item => item.id}
+          keyExtractor={i => i.id}
+          contentContainerStyle={{ padding: 20 }}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
           renderItem={({ item }) => (
-            <View style={[styles.bubble, item.sender === 'user' ? styles.userBubble : styles.boscoBubble]}>
-              <Text style={[styles.text, item.sender === 'user' ? styles.userText : styles.boscoText]}>
-                {item.text}
-              </Text>
+            <View style={[styles.bubble, item.sender === 'user' ? styles.userB : styles.boscoB]}>
+              <Text style={[styles.msgText, { color: item.sender === 'user' ? '#FFF' : '#333' }]}>{item.text}</Text>
             </View>
           )}
-          contentContainerStyle={styles.listContent}
         />
-
+        
         {isTyping && (
-          <View style={styles.typingContainer}>
-            <ActivityIndicator size="small" color={Colors.primary} />
-            <Text style={styles.typingText}>Don Bosco está escribiendo...</Text>
+          <View style={styles.typingBox}>
+            <ActivityIndicator size="small" color="#B8860B" />
+            <Text style={styles.typingText}>Don Bosco está pensando...</Text>
           </View>
         )}
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Escribe tu mensaje aquí..."
-            value={inputText}
-            onChangeText={setInputText}
-            placeholderTextColor="#999"
-            multiline={false} // Evita que crezca demasiado y tape la navegación
-          />
-          <TouchableOpacity 
-            style={[styles.sendBtn, { opacity: inputText.length > 0 ? 1 : 0.6 }]} 
-            onPress={sendMessage}
-            disabled={inputText.length === 0}
-          >
-            <Ionicons name="send" size={20} color="#FFF" />
-          </TouchableOpacity>
-        </View>
+        <ChatInput value={inputText} onChangeText={setInputText} onSend={sendMessage} disabled={isTyping} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: Colors.background },
-  container: { flex: 1 },
-  listContent: { padding: 20, paddingBottom: 10 },
-  bubble: { padding: 15, borderRadius: 20, marginBottom: 12, maxWidth: '85%' },
-  boscoBubble: { 
-    alignSelf: 'flex-start', 
-    backgroundColor: '#FFF', 
-    borderWidth: 1, 
-    borderColor: '#EEE', 
-    borderBottomLeftRadius: 4,
-    // Sombra ligera para legibilidad
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+  container: { flex: 1, backgroundColor: '#FDFBF0' },
+  header: { 
+    flexDirection: 'row', justifyContent: 'space-between', padding: 15, 
+    backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#F3EFE0', alignItems: 'center' 
   },
-  userBubble: { 
-    alignSelf: 'flex-end', 
-    backgroundColor: Colors.primary, 
-    borderBottomRightRadius: 4 
-  },
-  text: { fontSize: 16, lineHeight: 22 },
-  boscoText: { color: '#333' },
-  userText: { color: '#FFF' },
-  typingContainer: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10 },
-  typingText: { marginLeft: 8, color: '#999', fontSize: 12, fontStyle: 'italic' },
-  inputContainer: { 
-    flexDirection: 'row', 
-    padding: 15, 
-    backgroundColor: '#FFF', 
-    alignItems: 'center', 
-    borderTopWidth: 1, 
-    borderTopColor: '#EEE',
-    // Elevamos el contenedor para que no sea tapado por barras de navegación inferiores
-    paddingBottom: Platform.OS === 'ios' ? 25 : 15, 
-  },
-  input: { 
-    flex: 1, 
-    backgroundColor: '#F5F5F5', 
-    borderRadius: 25, 
-    paddingHorizontal: 20, 
-    paddingVertical: 12, 
-    marginRight: 10, 
-    fontSize: 16,
-    color: '#333'
-  },
-  sendBtn: { 
-    backgroundColor: Colors.primary, 
-    width: 48, 
-    height: 48, 
-    borderRadius: 24, 
-    justifyContent: 'center', 
-    alignItems: 'center' 
-  }
+  headerTitle: { fontFamily: 'Cinzel-Bold', color: '#B8860B', fontSize: 16 },
+  bubble: { padding: 18, borderRadius: 25, marginBottom: 15, maxWidth: '85%', elevation: 2, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5 },
+  userB: { alignSelf: 'flex-end', backgroundColor: '#B8860B', borderBottomRightRadius: 4 },
+  boscoB: { alignSelf: 'flex-start', backgroundColor: '#FFF', borderBottomLeftRadius: 4 },
+  msgText: { fontSize: 16, lineHeight: 22 },
+  typingBox: { flexDirection: 'row', paddingLeft: 25, marginBottom: 15, alignItems: 'center' },
+  typingText: { marginLeft: 10, color: '#B8860B', fontStyle: 'italic', fontSize: 12 }
 });
