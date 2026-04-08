@@ -4,12 +4,12 @@
     "slug": "tesisapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/ImagenSplash.png",
+    "icon": "./assets/images/ImagenSplash.png",
     "scheme": "tesisapp",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/ImagenSplash.png",
+      "image": "./assets/images/ImagenSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
