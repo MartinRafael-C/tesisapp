@@ -28,14 +28,8 @@ export default function HologramGuide() {
       <LinearGradient colors={['#001a1a', '#000000']} style={StyleSheet.absoluteFill} />
       
       <SafeAreaView style={styles.container} edges={['top']}>
-        {/* Header Estilo Terminal */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="chevron-back" size={24} color={THEME.white} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>D A T A _ P R I S M A</Text>
-          <View style={{ width: 24 }} />
-        </View>
+      
+       
 
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Text style={styles.intro}>
