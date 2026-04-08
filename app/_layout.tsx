@@ -1,17 +1,16 @@
-import { useEffect } from 'react';
-import { Stack } from 'expo-router';
-import { 
-  useFonts, 
-  Montserrat_900Black, 
-  Montserrat_700Bold 
-} from '@expo-google-fonts/montserrat';
-import { 
-  Inter_400Regular, 
-  Inter_500Medium 
+import {
+  Inter_400Regular,
+  Inter_500Medium
 } from '@expo-google-fonts/inter';
+import {
+  Montserrat_700Bold,
+  Montserrat_900Black,
+  useFonts
+} from '@expo-google-fonts/montserrat';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { useEffect } from 'react';
 
 // Mantenemos la pantalla de carga hasta que el sistema esté listo
 SplashScreen.preventAutoHideAsync();
@@ -58,7 +57,7 @@ export default function RootLayout() {
     },
     contentStyle: { backgroundColor: THEME.black },
     animation: 'fade',
-    headerShadowVisible: false, 
+    headerShown: false,
   }}
 >
         {/* Pantallas de Inicio y Registro */}
@@ -105,7 +104,7 @@ export default function RootLayout() {
           name="tutorial" 
           options={{ 
             title: 'LEARNING_MODULE',
-            headerShown: true 
+            headerShown: false 
           }} 
         />
       </Stack>
