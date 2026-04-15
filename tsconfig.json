@@ -9,21 +9,19 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "allowJs": true,  
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "~/*": [
-        "app/*"
-      ]
+      "@/*": ["src/*"],
+      "~/*": ["app/*"]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "src",
-    "app"
+    "app",
+    "services"   // 👈 agrega esto
   ],
   "exclude": [
     "node_modules",
