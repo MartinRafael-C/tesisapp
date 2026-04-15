@@ -1,53 +1,35 @@
-> Edited for use in IDX on 07/09/12
+# 🕊️ Oratorio Digital - Proyecto de Tesis
 
-# Welcome to your Expo app 👋
+**Oratorio Digital** es una aplicación móvil desarrollada con **Expo** y **React Native** diseñada para acercar la figura de San Juan Bosco a las nuevas generaciones a través de tecnología interactiva. El proyecto integra un chatbot inteligente y una guía técnica para la construcción de un proyector de hologramas físico.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+---
 
-## Get started
+## 🚀 Funcionalidades Principales
 
-#### Android
+* **Don Bosco IA (Chatbot):** Interacción en tiempo real con un modelo de lenguaje (LLM) configurado con la personalidad y enseñanzas de San Juan Bosco.
+* **Proceso Holograma:** Guía detallada paso a paso para la construcción de un prisma de acetato y visualización de proyecciones 3D.
+* **Sistema de Notificaciones:** Alertas locales para mejorar el compromiso del usuario y avisar sobre respuestas de la IA.
+* **Estética Sacro-Premium:** Interfaz diseñada con una paleta de colores crema y dorado, utilizando fuentes elegantes como *Cinzel*.
+* **Autenticación Segura:** Integración con **Supabase Auth** para la gestión de usuarios.
 
-Android previews are defined as a `workspace.onStart` hook and started as a vscode task when the workspace is opened/started.
+---
 
-Note, if you can't find the task, either:
-- Rebuild the environment (using command palette: `IDX: Rebuild Environment`), or
-- Run `npm run android -- --tunnel` command manually run android and see the output in your terminal. The device should pick up this new command and switch to start displaying the output from it.
+## 🛠️ Stack Tecnológico
 
-In the output of this command/task, you'll find options to open the app in a
+* **Framework:** [Expo](https://expo.dev/) (SDK 54)
+* **Lenguaje:** TypeScript
+* **Base de Datos y Auth:** [Supabase](https://supabase.com/)
+* **IA:** [OpenRouter API](https://openrouter.ai/) (Modelo Qwen-Turbo)
+* **Navegación:** Expo Router (File-based routing)
+* **Estilos:** React Native StyleSheet & Markdown Support
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You'll also find options to open the app's developer menu, reload the app, and more.
+## 📦 Instalación y Configuración
 
-#### Web
+Sigue estos pasos para ejecutar el proyecto en tu entorno local:
 
-Web previews will be started and managred automatically. Use the toolbar to manually refresh.
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/tu-usuario/tesisapp.git](https://github.com/tu-usuario/tesisapp.git)
+   cd tesisapp
