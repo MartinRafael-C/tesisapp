@@ -1,20 +1,32 @@
-import { useEffect } from 'react';
+import {
+  Inter_400Regular,
+  Inter_500Medium
+} from '@expo-google-fonts/inter';
+import {
+  Montserrat_700Bold,
+  Montserrat_900Black,
+  useFonts
+} from '@expo-google-fonts/montserrat';
 import { Stack } from 'expo-router';
-import { useFonts, Cinzel_700Bold, Cinzel_400Regular } from '@expo-google-fonts/cinzel';
-import { Lato_400Regular, Lato_300Light } from '@expo-google-fonts/lato';
 import * as SplashScreen from 'expo-splash-screen';
-import { Colors } from '../constants/Colors';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 
-// Evita que la pantalla de carga se oculte antes de cargar las fuentes
+// Mantenemos la pantalla de carga hasta que el sistema esté listo
 SplashScreen.preventAutoHideAsync();
+
+const THEME = {
+  black: '#000000',
+  teal: '#008080',
+  white: '#FFFFFF',
+};
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    'Cinzel-Bold': Cinzel_700Bold,
-    'Cinzel-Regular': Cinzel_400Regular,
-    'Lato-Regular': Lato_400Regular,
-    'Lato-Light': Lato_300Light,
+    'Montserrat-Black': Montserrat_900Black,
+    'Montserrat-Bold': Montserrat_700Bold,
+    'Inter-Regular': Inter_400Regular,
+    'Inter-Medium': Inter_500Medium,
   });
 
   useEffect(() => {
@@ -29,33 +41,72 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      {/* StatusBar en light para que resalte sobre el fondo negro */}
+      <StatusBar style="light" />
+      
       <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: Colors.background,
-          },
-          headerTintColor: Colors.text,
-          headerTitleStyle: {
-            fontFamily: 'Cinzel-Bold',
-            fontSize: 18,
-          },
-          contentStyle: { backgroundColor: Colors.background },
-          // Animación de transición suave
-          animation: 'fade_from_bottom',
-        }}
-      >
-        {/* Definición de rutas */}
+  screenOptions={{
+    headerStyle: {
+      backgroundColor: THEME.black,
+    },
+    headerTintColor: THEME.teal,
+    headerTitleStyle: {
+      fontFamily: 'Montserrat-Bold',
+      fontSize: 14,
+      // Se eliminó letterSpacing de aquí para evitar el error TS2353
+    },
+    contentStyle: { backgroundColor: THEME.black },
+    animation: 'fade',
+    headerShown: false,
+  }}
+>
+        {/* Pantallas de Inicio y Registro */}
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="register" options={{ title: 'Inscripción' }} />
+        <Stack.Screen 
+          name="register" 
+          options={{ 
+            title: 'REGISTRO_SISTEMA',
+            headerShown: true 
+          }} 
+        />
+        
+        {/* Dashboard Principal */}
         <Stack.Screen name="home" options={{ headerShown: false }} />
-        <Stack.Screen name="tutorial" options={{ title: 'Construcción' }} />
-        <Stack.Screen name="chat" options={{ title: 'Conversación con el Santo' }} />
-        <Stack.Screen name="hologram-view" options={{ 
-            title: 'Holograma',
-            headerStyle: { backgroundColor: '#000' },
-            headerTintColor: '#FFF' 
-        }} />
+        
+        {/* Secciones de Contenido */}
+        <Stack.Screen 
+          name="holograma" 
+          options={{ 
+            title: 'DATA_PRISMA',
+            headerShown: true 
+          }} 
+        />
+        
+        <Stack.Screen 
+          name="chat" 
+          options={{ 
+            title: 'NEURAL_INTERFACE',
+            headerShown: false // Lo manejamos interno para el estilo personalizado
+          }} 
+        />
+
+        {/* Vista del Holograma (Modo inmersivo total) */}
+        <Stack.Screen 
+          name="hologram-view" 
+          options={{ 
+            headerShown: false, // Máxima oscuridad
+            presentation: 'fullScreenModal',
+            animation: 'fade'
+          }} 
+        />
+        
+        <Stack.Screen 
+          name="tutorial" 
+          options={{ 
+            title: 'LEARNING_MODULE',
+            headerShown: false 
+          }} 
+        />
       </Stack>
     </>
   );

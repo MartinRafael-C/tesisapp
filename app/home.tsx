@@ -4,13 +4,22 @@ import { useRouter } from 'expo-router';
 import { supabase } from '../services/supabaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const THEME = {
+  black: '#000000',
+  petroleo: '#002626',
+  white: '#FFFFFF',
+  teal: '#008080',
+  grayDark: '#1A1A1A',
+  glass: 'rgba(255, 255, 255, 0.08)'
+};
 
 const FRASES_BOSCO = [
-  "«Hijo mío, estate siempre alegre. Nuestra santidad consiste en estar muy alegres».",
-  "«La educación es cosa del corazón. Solo Dios tiene las llaves».",
-  "«Caminen con los pies en la tierra, pero vivan con el corazón en el cielo».",
-  "«Me basta que sean jóvenes para que los ame con todo mi corazón».",
-  "«No dejes para mañana el bien que puedas hacer hoy»."
+  "ESTATE SIEMPRE ALEGRE.",
+  "LA EDUCACIÓN ES COSA DEL CORAZÓN.",
+  "PIES EN LA TIERRA, CORAZÓN EN EL CIELO.",
+  "AMA LO QUE AMAN LOS JÓVENES."
 ];
 
 export default function HomeScreen() {
@@ -19,214 +28,186 @@ export default function HomeScreen() {
   const [frase, setFrase] = useState('');
 
   useEffect(() => {
-    // Lógica de saludo según la hora
     const hora = new Date().getHours();
-    if (hora >= 6 && hora < 12) setSaludo('Buenos Días');
-    else if (hora >= 12 && hora < 19) setSaludo('Buenas Tardes');
-    else setSaludo('Buenas Noches');
+    if (hora >= 6 && hora < 12) setSaludo('BUENOS DÍAS');
+    else if (hora >= 12 && hora < 19) setSaludo('BUENAS TARDES');
+    else setSaludo('BUENAS NOCHES');
 
-    // Selección de frase aleatoria
-    const indiceAleatorio = Math.floor(Math.random() * FRASES_BOSCO.length);
-    setFrase(FRASES_BOSCO[indiceAleatorio]);
+    setFrase(FRASES_BOSCO[Math.floor(Math.random() * FRASES_BOSCO.length)]);
   }, []);
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      // Regresa a la pantalla de "Bienvenido" (index.tsx)
-      router.replace('/');
-    }
+    await supabase.auth.signOut();
+    router.replace('/');
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        
-        {/* Header Centralizado y con margen superior */}
-        <View style={styles.header}>
-          <Text style={styles.brandTitle}>ORATORIO DIGITAL</Text>
-          <View style={styles.timeBadge}>
-            <Text style={styles.timeText}>{saludo}</Text>
-          </View>
-        </View>
-
-        {/* Burbuja de Frases de Don Bosco (Icono corregido) */}
-        <View style={styles.quoteBubble}>
-          <Ionicons name="chatbubble-ellipses-sharp" size={28} color="#B8860B" style={styles.quoteIcon} />
-          <Text style={styles.quoteText}>{frase}</Text>
-          <Text style={styles.quoteAuthor}>— San Juan Bosco</Text>
-        </View>
-
-        {/* Contenedor de Botones Principales */}
-        <View style={styles.buttonContainer}>
+    <View style={{ flex: 1, backgroundColor: THEME.black }}>
+      <LinearGradient colors={['#001a1a', '#000000']} style={StyleSheet.absoluteFill} />
+      
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           
-          {/* Botón Holograma */}
-          <TouchableOpacity 
-            style={styles.mainButton} 
-            onPress={() => router.push('/holograma')}
-          >
-            <View style={styles.iconCircle}>
-              <Ionicons name="cube" size={26} color="#FFF" />
+          {/* Header Impacto Montserrat Black */}
+          <View style={styles.header}>
+            <Text style={styles.systemStatus}>ONLINE_SISTEMA_v1.0</Text>
+            <Text style={styles.brandTitle}>ORATORIO</Text>
+            <Text style={[styles.brandTitle, styles.outlineText]}>DIGITAL</Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{saludo}</Text>
             </View>
-            <View style={styles.btnTextBox}>
-              <Text style={styles.btnTitle}>PROCESO HOLOGRAMA</Text>
-              <Text style={styles.btnDesc}>Guía técnica y visualización 3D</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#DDD" />
-          </TouchableOpacity>
+          </View>
 
-          {/* Botón Chatbot */}
-          <TouchableOpacity 
-            style={[styles.mainButton, { borderLeftColor: '#2E7D32' }]} 
-            onPress={() => router.push('/chat')}
-          >
-            <View style={[styles.iconCircle, { backgroundColor: '#2E7D32' }]}>
-              <Ionicons name="chatbox-ellipses" size={26} color="#FFF" />
-            </View>
-            <View style={styles.btnTextBox}>
-              <Text style={styles.btnTitle}>CHATBOT DON BOSCO</Text>
-              <Text style={styles.btnDesc}>Conversa con nuestra Inteligencia Artificial</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#DDD" />
-          </TouchableOpacity>
+          {/* Card de Frase Estilo Instagram Tech */}
+          <View style={styles.quoteCard}>
+            <View style={styles.tealLine} />
+            <Text style={styles.quoteText}>"{frase}"</Text>
+            <Text style={styles.author}>— SAN JUAN BOSCO</Text>
+          </View>
 
-        </View>
+          {/* Grid de Navegación */}
+          <View style={styles.menuGrid}>
+            <TouchableOpacity 
+              style={styles.navButton} 
+              onPress={() => router.push('/holograma')}
+            >
+              <View style={styles.btnHeader}>
+                <Ionicons name="cube-outline" size={20} color={THEME.teal} />
+                <Text style={styles.btnTag}>TECH_MODULE</Text>
+              </View>
+              <Text style={styles.navButtonText}>VISTA HOLOGRAMA</Text>
+              <Text style={styles.navButtonSub}>PROYECCIÓN ÓPTICA 3D</Text>
+            </TouchableOpacity>
 
-        {/* Bloque de Cierre de Sesión inferior */}
-        <View style={styles.footer}>
+            <TouchableOpacity 
+              style={[styles.navButton, styles.activeButton]} 
+              onPress={() => router.push('/chat')}
+            >
+              <View style={styles.btnHeader}>
+                <Ionicons name="chatbubble-ellipses-outline" size={20} color={THEME.white} />
+                <Text style={[styles.btnTag, { color: THEME.white }]}>NEURAL_CORE</Text>
+              </View>
+              <Text style={[styles.navButtonText, { color: THEME.white }]}>CHATBOT IA</Text>
+              <Text style={[styles.navButtonSub, { color: 'rgba(255,255,255,0.6)' }]}>INTERFAZ DE CONVERSACIÓN</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Footer de Salida */}
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={20} color="#C62828" />
-            <Text style={styles.logoutText}>CERRAR SESIÓN</Text>
+            <Ionicons name="power-outline" size={16} color="#C62828" />
+            <Text style={styles.logoutText}>TERMINAR_SESIÓN</Text>
           </TouchableOpacity>
-        </View>
 
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FDFBF0', // Fondo crema suave
+  container: { flex: 1 },
+  scrollContent: { padding: 25 },
+  header: { marginTop: 30, marginBottom: 40 },
+  systemStatus: { 
+    color: THEME.teal, 
+    fontFamily: 'Inter-Medium', 
+    fontSize: 10, 
+    letterSpacing: 2, 
+    marginBottom: 5 
   },
-  scrollContent: {
-    paddingHorizontal: 25,
-    paddingBottom: 40,
+  brandTitle: { 
+    fontSize: 52, 
+    color: THEME.white, 
+    fontFamily: 'Montserrat-Black', 
+    letterSpacing: -2, 
+    lineHeight: 48 
   },
-  header: {
-    marginTop: 40, // Espacio para que no pegue arriba
-    alignItems: 'center',
-    marginBottom: 35,
+  outlineText: { 
+    color: 'transparent', 
+    textShadowColor: THEME.white, 
+    textShadowRadius: 1,
+    textShadowOffset: { width: 1, height: 1 },
+    // En algunas plataformas se usa borderWidth si el motor lo soporta
   },
-  brandTitle: {
-    fontFamily: 'Cinzel-Bold', // Asegúrate de tener cargada esta fuente
-    fontSize: 28,
-    color: '#333',
-    letterSpacing: 2,
-    textAlign: 'center',
-  },
-  timeBadge: {
-    backgroundColor: '#F3EFE0',
-    paddingHorizontal: 25,
-    paddingVertical: 8,
-    borderRadius: 25,
-    marginTop: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(184, 134, 11, 0.2)',
-  },
-  timeText: {
-    fontFamily: 'Cinzel-Bold',
-    fontSize: 16,
-    color: '#B8860B',
-  },
-  quoteBubble: {
-    backgroundColor: '#FFF',
-    padding: 25,
-    borderRadius: 30,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 15,
-    marginBottom: 40,
-    borderWidth: 1,
-    borderColor: '#F0F0F0',
-  },
-  quoteIcon: {
-    alignSelf: 'center',
-    marginBottom: 10,
-  },
-  quoteText: {
-    fontSize: 16,
-    color: '#444',
-    fontStyle: 'italic',
-    lineHeight: 24,
-    textAlign: 'center',
-    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
-  },
-  quoteAuthor: {
-    textAlign: 'right',
+  badge: { 
+    backgroundColor: THEME.teal, 
+    alignSelf: 'flex-start', 
+    paddingHorizontal: 10, 
+    paddingVertical: 3, 
     marginTop: 15,
-    fontFamily: 'Cinzel-Bold',
-    fontSize: 11,
-    color: '#B8860B',
-    letterSpacing: 1,
+    borderRadius: 2
   },
-  buttonContainer: {
-    gap: 18,
+  badgeText: { color: THEME.white, fontFamily: 'Montserrat-Bold', fontSize: 10 },
+  
+  quoteCard: { 
+    backgroundColor: THEME.grayDark, 
+    padding: 24, 
+    borderLeftWidth: 4, 
+    borderLeftColor: THEME.teal, 
+    marginBottom: 40,
+    borderRadius: 2
   },
-  mainButton: {
-    backgroundColor: '#FFF',
-    flexDirection: 'row',
+  quoteText: { 
+    color: THEME.white, 
+    fontSize: 20, 
+    fontFamily: 'Montserrat-Bold', 
+    letterSpacing: -0.5 
+  },
+  author: { 
+    color: THEME.teal, 
+    fontSize: 11, 
+    marginTop: 12, 
+    fontFamily: 'Inter-Medium', 
+    letterSpacing: 1 
+  },
+  tealLine: { width: 40, height: 2, backgroundColor: THEME.teal, marginBottom: 15 },
+
+  menuGrid: { gap: 16 },
+  navButton: { 
+    backgroundColor: THEME.petroleo, 
+    padding: 24, 
+    borderWidth: 1, 
+    borderColor: THEME.glass, 
+    borderRadius: 2 
+  },
+  activeButton: {
+    backgroundColor: THEME.teal,
+    borderColor: 'transparent'
+  },
+  btnHeader: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
     alignItems: 'center',
-    padding: 18,
-    borderRadius: 22,
-    borderLeftWidth: 6,
-    borderLeftColor: '#B8860B',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    marginBottom: 15
   },
-  iconCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 18,
-    backgroundColor: '#B8860B',
-    justifyContent: 'center',
-    alignItems: 'center',
+  btnTag: { 
+    color: THEME.teal, 
+    fontSize: 9, 
+    fontFamily: 'Inter-Medium', 
+    letterSpacing: 1.5 
   },
-  btnTextBox: {
-    marginLeft: 15,
-    flex: 1,
+  navButtonText: { 
+    color: THEME.white, 
+    fontSize: 18, 
+    fontFamily: 'Montserrat-Black',
   },
-  btnTitle: {
-    fontFamily: 'Cinzel-Bold',
-    fontSize: 14,
-    color: '#333',
-    letterSpacing: 0.5,
+  navButtonSub: { 
+    color: 'rgba(255,255,255,0.4)', 
+    fontSize: 10, 
+    marginTop: 4, 
+    fontFamily: 'Inter-Regular',
+    letterSpacing: 1 
   },
-  btnDesc: {
-    fontSize: 11,
-    color: '#888',
-    marginTop: 3,
-  },
-  footer: {
-    marginTop: 60,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
-  },
-  logoutBtn: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+
+  logoutBtn: { 
+    marginTop: 60, 
+    alignSelf: 'center', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
     gap: 8,
+    borderBottomWidth: 1, 
+    borderBottomColor: '#C62828',
+    paddingBottom: 4
   },
-  logoutText: {
-    fontFamily: 'Cinzel-Bold',
-    fontSize: 13,
-    color: '#C62828',
-    letterSpacing: 1,
-  },
+  logoutText: { color: '#C62828', fontSize: 10, fontFamily: 'Montserrat-Bold', letterSpacing: 2 }
 });
