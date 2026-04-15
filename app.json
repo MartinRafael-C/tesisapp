@@ -1,45 +1,43 @@
 {
   "expo": {
-    "name": "tesisapp",
+    "name": "Oratorio Digital",
     "slug": "tesisapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/ImagenSplash.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "tesisapp",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/images/ImagenSplash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff",
-        "foregroundImage": "./assets/images/ImagenSplash.png"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#000000"
       },
-      "package": "com.anonymous.tesisapp",
+      "package": "com.tuusuario.oratoriodigital",
       "permissions": [
-        "RECEIVE_BOOT_COMPLETED"
+        "NOTIFICATIONS"
       ]
     },
-    "extra": {
-      "eas": {
-        "projectId": "TU_PROJECT_ID_AQUÍ"
-      }
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/ImagenSplash.png",
-          "color": "#ffffff"
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#008080"
         }
       ]
-    ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
