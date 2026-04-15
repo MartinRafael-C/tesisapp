@@ -19,9 +19,12 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
-        "foregroundImage": "./assets/images/android-icon-foreground.png"
+        "foregroundImage": "./assets/images/ImagenSplash.png"
       },
-      "package": "com.anonymous.tesisapp"
+      "package": "com.anonymous.tesisapp",
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED"
+      ]
     },
     "extra": {
       "eas": {
@@ -29,7 +32,14 @@
       }
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/ImagenSplash.png",
+          "color": "#ffffff"
+        }
+      ]
     ]
   }
 }
