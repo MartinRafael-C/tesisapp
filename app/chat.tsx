@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Markdown from 'react-native-markdown-display'; 
 import ChatInput from '../components/ChatInput';
+import * as Notifications from 'expo-notifications'; // IMPORTANTE
 
 const THEME = {
   black: '#000000',
@@ -44,10 +45,31 @@ export default function ChatScreen() {
           ],
         }),
       });
+      
       const data = await response.json();
-      setMessages(prev => [...prev, { id: Date.now().toString(), text: data.choices[0].message.content, sender: 'bosco' }]);
-    } catch (e) { console.error(e); } 
-    finally { 
+      const botResponse = data.choices[0].message.content;
+
+      // ACTUALIZAR MENSAJES
+      setMessages(prev => [...prev, { id: Date.now().toString(), text: botResponse, sender: 'bosco' }]);
+
+      // DISPARAR NOTIFICACIÓN DE RESPUESTA
+      try {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "SISTEMA_MENSAJE 💬",
+            body: "Don Bosco ha enviado una respuesta a tu consulta.",
+            sound: true,
+            priority: Notifications.AndroidNotificationPriority.HIGH,
+          },
+          trigger: null,
+        });
+      } catch (notifyErr) {
+        console.log("Error al notificar");
+      }
+
+    } catch (e) { 
+      console.error(e); 
+    } finally { 
       setIsTyping(false); 
       setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     }
@@ -62,7 +84,9 @@ export default function ChatScreen() {
       >
         <SafeAreaView style={{ flex: 1 }} edges={['top']}>
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()}><Ionicons name="chevron-back" size={24} color={THEME.white} /></TouchableOpacity>
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="chevron-back" size={24} color={THEME.white} />
+            </TouchableOpacity>
             <Text style={styles.headerTitle}>NEURAL_BOSCO_v1.0</Text>
             <View style={{ width: 24 }} />
           </View>
@@ -77,6 +101,7 @@ export default function ChatScreen() {
                 <Markdown style={markdownStyles}>{item.text}</Markdown>
               </View>
             )}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
           />
 
           {isTyping && (
