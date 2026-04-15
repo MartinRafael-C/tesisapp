@@ -4,7 +4,7 @@
     "slug": "tesisapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/ImagenSplash.png", 
     "scheme": "tesisapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/ImagenSplash.png",
         "backgroundColor": "#000000"
       },
       "package": "com.tuusuario.oratoriodigital",
@@ -21,23 +21,31 @@
         "NOTIFICATIONS"
       ]
     },
+    "splash": {
+      "image": "./assets/images/ImagenSplash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/ImagenSplash.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/notification-icon.png",
+          "icon": "./assets/images/ImagenSplash.png",
           "color": "#008080"
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e2eeb50b-53a5-4065-b37e-ae5ebfc57ddb"
+      }
     }
   }
 }

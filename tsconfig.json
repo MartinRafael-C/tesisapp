@@ -9,11 +9,15 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowJs": true,  
+    "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "~/*": ["app/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "~/*": [
+        "app/*"
+      ]
     }
   },
   "include": [
@@ -21,7 +25,9 @@
     "**/*.tsx",
     "src",
     "app",
-    "services"   // 👈 agrega esto
+    "services",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ],
   "exclude": [
     "node_modules",
