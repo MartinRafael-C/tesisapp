@@ -25,9 +25,7 @@
     "**/*.tsx",
     "src",
     "app",
-    "services",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "services"
   ],
   "exclude": [
     "node_modules",

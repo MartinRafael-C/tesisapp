@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1013282968794",
+    "project_id": "proyectodonbosco-65b6a",
+    "storage_bucket": "proyectodonbosco-65b6a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013282968794:android:5fb0fed3bb4601ff9cc1e3",
+        "android_client_info": {
+          "package_name": "com.holobosco.tesis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB63xApJHGLcQL5QMMU_c7CcZvl7Owy3GE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
